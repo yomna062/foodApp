@@ -1,0 +1,15 @@
+.auth-container{
+    background-image: url(./assets/images/authimg\ \(1\).png);
+    background-size: cover;
+    background-position: center center;
+    
+}
+.overLay{
+    background: linear-gradient(45deg,rgba(47, 140, 96, 0.5),rgba(0, 0, 0, 0.99));
+}
+.main-color{
+    color: #4AA35A;
+}
+.main-bg{
+    background-color: #4AA35A;
+}
