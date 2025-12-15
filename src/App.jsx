@@ -13,7 +13,6 @@ import ForgetPass from './AuthModule/Components/ForgetPass/ForgetPass';
 // Shared
 import NotFound from './Shared/Components/NotFound/NotFound';
 import MasterLayout from './Shared/Components/MasterLayout/MasterLayout';
-import Dashboard from './Shared/Components/Dashboard/Dashboard';
 
 // Recipes
 import RecipesList from './RecipeModule/Components/RecipesList/RecipesList';
@@ -25,6 +24,8 @@ import CategoryData from './CategoriesModule/Components/CategoryData/CategoryDat
 
 // Users
 import UsersList from './UserModule/Components/UsersList/UsersList';
+
+import Dashboard from './Dashboardmodule/Component/Dashboard/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -36,24 +37,25 @@ function App() {
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Login /> },
-        { path: 'Register', element: <Register /> },
-        { path: 'Login', element: <Login /> },
-        { path: 'ChangePass', element: <ChangePass /> },
-        { path: 'verifyAccount', element: <VerifyAccount /> },
-        { path: 'ResetPass', element: <ResetPass /> },
-        { path: 'ForgetPass', element: <ForgetPass /> },
+        { path: 'register', element: <Register /> },
+        { path: 'login', element: <Login /> },
+       
+        { path: 'verifyaccount', element: <VerifyAccount /> },
+        { path: 'resetpass', element: <ResetPass /> },
+        { path: 'forgetpass', element: <ForgetPass /> },
       ],
     },
     {
       path: 'dashboard',
       element: <MasterLayout />,
       children: [
-        { index: true, element: <Dashboard /> },
-        { path: 'recips', element: <RecipesList /> },
-        { path: 'Recipe-Data', element: <RecipeData /> },
-        { path: 'categories', element: <CategoriesList /> },
+        { index: true, element: <Dashboard /> }, 
+        { path: 'recipes-list', element: <RecipesList /> },
+        { path: 'recipe-data', element: <RecipeData /> }, 
+         { path: 'changepass', element: <ChangePass /> },
+        { path: 'categories-list', element: <CategoriesList /> }, 
         { path: 'category-data', element: <CategoryData /> },
-        { path: 'users', element: <UsersList /> },
+        { path: 'users', element: <UsersList /> }, 
       ],
     },
   ]);

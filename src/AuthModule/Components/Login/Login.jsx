@@ -18,9 +18,10 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       const response = await axios.post('https://upskilling-egypt.com:3006/api/v1/Users/Login', data);
+      localStorage.setItem('token', response.data.token)
       toast.success('Login Successful!');
       navigate('/dashboard'); 
-      console.log(response.data);
+
     } catch (error) {
       console.error('There was an error!', error);
       toast.error('Login Failed! Please check your credentials.');

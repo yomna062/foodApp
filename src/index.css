@@ -10,6 +10,33 @@
 .main-color{
     color: #4AA35A;
 }
+.secondary-color{
+    color:#009247;
+}
+.secondary-bg{
+    background:#009247;
+}
 .main-bg{
     background-color: #4AA35A;
+}
+.sidebar-container .ps-sidebar-container{
+    border-top-right-radius: 35px;
+    background:#1F263E;
+    color: white;
+    min-height: 100vh;
+}
+.dashboard-details{
+    background-color: #F0FFEF !important; 
+}
+.sidebar-container .ps-menu-button{
+   transition: all;
+}
+.sidebar-container .ps-menu-button:hover {
+    background-color: rgba(0, 146, 77, 0.1) !important;
+    border-left: #009247 5px solid;
+  
+}
+.sidebar-active {
+  background-color:rgba(0, 146, 77, 0.1)  !important; 
+   border-left: #009247 5px solid;
 }
