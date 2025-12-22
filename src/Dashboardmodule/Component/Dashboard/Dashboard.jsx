@@ -1,22 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Header from '../../../Shared/Components/Header/Header';
 import headerimg1 from '../../../assets/images/header1.png';
 import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../Context/AuthContext/AuthContext';
 
 
 export default function Dashboard() {
  const navigate= useNavigate()
+   const {loginData}  =useContext(AuthContext)
   return (
     <>
       {/* Header */}
       <Header
         title="Welcome"
-        subtitle="Upskilling!"
+        subtitle={loginData?.userName}
         description="This is a welcoming screen for the entry of the application, you can now see the options"
         imgUrl={headerimg1}
         minHeight="280px"
         imgWidth="75"
       />
+      
 
       <div className='dashboard-details  d-flex flex-column flex-md-row align-items-center align-items-md-center p-4 p-md-5 justify-content-between my-3 rounded-4 shadow-sm bg-white'>
 

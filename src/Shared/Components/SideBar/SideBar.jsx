@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Sidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../../assets/images/logosidebar.png';
+import { AuthContext } from '../../../Context/AuthContext/AuthContext';
 
 export default function SideBar() {
+  const { Logout } = useContext(AuthContext);  
+
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
 
   const toggleIsCollapsed = () => setIsCollapsed(!isCollapsed);
 
   const getMenuItemClass = (path) => {
-    return location.pathname === path
-      ? 'sidebar-active text-white'  
-      : '';
+    return location.pathname === path ? 'sidebar-active text-white' : '';
   };
 
   return (
@@ -66,13 +67,14 @@ export default function SideBar() {
           <MenuItem
             icon={<i className="fa-solid fa-key"></i>}
             component={<Link to="/dashboard/changepass" />}
-           className={getMenuItemClass('/dashboard/changepass')}
+            className={getMenuItemClass('/dashboard/changepass')}
           >
             Change Password
           </MenuItem>
 
           <MenuItem
             icon={<i className="fa-solid fa-right-from-bracket"></i>}
+            onClick={Logout} 
             component={<Link to="/" />}
           >
             Logout

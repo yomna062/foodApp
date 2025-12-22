@@ -28,6 +28,7 @@ import UsersList from './UserModule/Components/UsersList/UsersList';
 import Dashboard from './Dashboardmodule/Component/Dashboard/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ProtectedRoute from './Shared/Components/ProtectedRoute/ProtectedRoute';
 
 function App() {
   const routes = createBrowserRouter([
@@ -47,14 +48,17 @@ function App() {
     },
     {
       path: 'dashboard',
-      element: <MasterLayout />,
+      element: <ProtectedRoute><MasterLayout /></ProtectedRoute>,
       children: [
         { index: true, element: <Dashboard /> }, 
         { path: 'recipes-list', element: <RecipesList /> },
         { path: 'recipe-data', element: <RecipeData /> }, 
          { path: 'changepass', element: <ChangePass /> },
         { path: 'categories-list', element: <CategoriesList /> }, 
-        { path: 'category-data', element: <CategoryData /> },
+            { path: 'category-data', element: <CategoryData /> },          // ADD
+        { path: 'category-data/:id', element: <CategoryData /> },
+         { path: 'recipe-data', element: <RecipeData /> },          // ADD
+        { path: 'recipe-data/:recipeId', element: <RecipeData /> } ,// EDIT ✅
         { path: 'users', element: <UsersList /> }, 
       ],
     },
@@ -63,7 +67,7 @@ function App() {
   return (
     <>
       <RouterProvider router={routes} />
-      <ToastContainer />
+      <ToastContainer position="top-center" theme="colored"/>
     </>
   );
 }

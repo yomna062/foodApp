@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import logo from '../../../assets/images/logo.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthContext } from '../../../Context/AuthContext/AuthContext';
 
 export default function Login() {
+ let { saveLoginData } = useContext(AuthContext);
   const navigate = useNavigate(); 
 
   const {
@@ -15,18 +17,27 @@ export default function Login() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async (data) => {
-    try {
-      const response = await axios.post('https://upskilling-egypt.com:3006/api/v1/Users/Login', data);
-      localStorage.setItem('token', response.data.token)
-      toast.success('Login Successful!');
-      navigate('/dashboard'); 
+const onSubmit = async (data) => {
+  try {
+    const response = await axios.post(
+      'https://upskilling-egypt.com:3006/api/v1/Users/Login',
+      data
+    );
 
-    } catch (error) {
-      console.error('There was an error!', error);
-      toast.error('Login Failed! Please check your credentials.');
-    }
-  };
+    localStorage.setItem('token', response.data.token);
+    saveLoginData();
+    toast.success(response.data.message || 'Login successful');
+    navigate('/dashboard');
+
+  } catch (error) {
+    console.error('There was an error!', error);
+
+    toast.error(
+      error.response?.data?.message || 'Login failed, please try again'
+    );
+  }
+};
+
 
   return (
     <div className="auth-container">
