@@ -1,0 +1,39 @@
+.not-found-wrapper {
+  min-height: 100vh;
+  background-color: #fcfcfc; /* Light background to make the green pop */
+  overflow: hidden;
+  position: relative;
+}
+
+.back-btn {
+  background-color: #00964c !important;
+  border: none;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.back-btn:hover {
+  transform: translateX(-5px);
+  background-color: #007d3f !important;
+}
+
+/* Optional: Add a subtle floating animation to the robot image */
+.floating-animation {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Responsive fix for small screens */
+@media (max-width: 768px) {
+  .not-found-wrapper {
+    text-align: center;
+    padding-top: 100px;
+  }
+  .not-found-wrapper .text-start {
+    text-align: center !important;
+  }
+}

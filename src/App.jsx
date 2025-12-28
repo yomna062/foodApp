@@ -29,6 +29,7 @@ import Dashboard from './Dashboardmodule/Component/Dashboard/Dashboard';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ProtectedRoute from './Shared/Components/ProtectedRoute/ProtectedRoute';
+import FavList from './favouriteModule/Component/FavList/FavList';
 
 function App() {
   const routes = createBrowserRouter([
@@ -44,22 +45,25 @@ function App() {
         { path: 'verifyaccount', element: <VerifyAccount /> },
         { path: 'resetpass', element: <ResetPass /> },
         { path: 'forgetpass', element: <ForgetPass /> },
+
       ],
     },
     {
       path: 'dashboard',
       element: <ProtectedRoute><MasterLayout /></ProtectedRoute>,
+        errorElement: <NotFound />,
       children: [
         { index: true, element: <Dashboard /> }, 
         { path: 'recipes-list', element: <RecipesList /> },
         { path: 'recipe-data', element: <RecipeData /> }, 
          { path: 'changepass', element: <ChangePass /> },
         { path: 'categories-list', element: <CategoriesList /> }, 
-            { path: 'category-data', element: <CategoryData /> },          // ADD
+         { path: 'category-data', element: <CategoryData /> },      
         { path: 'category-data/:id', element: <CategoryData /> },
-         { path: 'recipe-data', element: <RecipeData /> },          // ADD
-        { path: 'recipe-data/:recipeId', element: <RecipeData /> } ,// EDIT ✅
+         { path: 'recipe-data', element: <RecipeData /> },         
+        { path: 'recipe-data/:recipeId', element: <RecipeData /> } ,
         { path: 'users', element: <UsersList /> }, 
+        {path: 'favList',element:<FavList/>}
       ],
     },
   ]);

@@ -1,5 +1,5 @@
 // ================= RecipesList.jsx =================
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../../../Shared/Components/Header/Header'
 import headerimg2 from '../../../assets/images/header2.png'
 import axios from 'axios'
@@ -8,22 +8,21 @@ import { toast } from 'react-toastify'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import DeleteConfirmation from '../../../Shared/Components/DeleteConfirmation/DeleteConfirmation'
+import { AuthContext } from '../../../Context/AuthContext/AuthContext'
 
 export default function RecipesList() {
   const [recipesList, setRecipesList] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [openMenuId, setOpenMenuId] = useState(null)
-  const [recipeId, setRecipeId] = useState(0)
+  const [recipeId, setRecipeId] = useState(null)
   const [recipeName, setRecipeName] = useState('')
-  const navigate = useNavigate()
   const [show, setShow] = useState(false)
+let navigate= useNavigate()
 
+  const { loginData } = useContext(AuthContext)
 
-
-  
-
-  // فتح/غلق Modal
+  // ================= Modal =================
   const handleClose = () => setShow(false)
   const handleShow = (recipe) => {
     setRecipeId(recipe.id)
@@ -31,7 +30,7 @@ export default function RecipesList() {
     setShow(true)
   }
 
-  // جلب كل الوصفات
+  // ================= Get All Recipes =================
   const getAllRecipes = async () => {
     try {
       const response = await axios.get(
@@ -50,7 +49,7 @@ export default function RecipesList() {
     }
   }
 
-  // حذف وصفة
+  // ================= Delete Recipe =================
   const deleteRecipe = async () => {
     try {
       await axios.delete(
@@ -65,27 +64,55 @@ export default function RecipesList() {
       getAllRecipes()
       handleClose()
     } catch (err) {
-      console.log(err)
+      console.error(err)
       toast.error('Failed to delete recipe')
     }
   }
 
-  // Dropdown toggle
+  // ================= Toggle Dropdown =================
   const toggleMenu = (id) => {
     setOpenMenuId(openMenuId === id ? null : id)
   }
 
+  // ================= Add To Favourite =================
+  const addToFav = async (id, name) => {
+    try {
+      await axios.post(
+        'https://upskilling-egypt.com:3006/api/v1/userRecipe',
+        {
+          recipeId: id, 
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+
+      toast.success(`Recipe "${name}" added to favourite successfully ❤️`)
+      navigate('/dashboard/FavList')
+
+      
+      getAllRecipes()
+    } catch (err) {
+      console.error(err.response?.data || err)
+      toast.error('Failed to add recipe to favourite')
+    }
+  }
+
+  // ================= UseEffect =================
   useEffect(() => {
     getAllRecipes()
   }, [])
 
   return (
     <>
-      {/* Delete Confirmation Modal */}
+      {/* ================= Delete Modal ================= */}
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton />
         <Modal.Body>
-          <DeleteConfirmation deleteItem={'recipe'} name={recipeName} />
+          <DeleteConfirmation deleteItem="recipe" name={recipeName} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="danger" onClick={deleteRecipe}>
@@ -97,7 +124,7 @@ export default function RecipesList() {
         </Modal.Footer>
       </Modal>
 
-      {/* Header */}
+      {/* ================= Header ================= */}
       <Header
         title="Recipes"
         subtitle="Items"
@@ -108,21 +135,24 @@ export default function RecipesList() {
         imgWidth="50"
       />
 
-      {/* Add Recipe Button */}
+      {/* ================= Top Section ================= */}
       <div className="d-flex justify-content-between align-items-center mx-4 mt-4">
-        <div className="recipe-title">
+        <div>
           <h6>Recipe Table Details</h6>
           <p>You can check all details</p>
         </div>
-        <button
-          className="border-0 px-4 rounded-2 py-2 text-light secondary-bg"
-          onClick={() => navigate('/dashboard/recipe-data')}
-        >
-          + Add New Recipe
-        </button>
+
+        {loginData?.userGroup !== 'SystemUser' && (
+          <button
+            className="border-0 px-4 rounded-2 py-2 text-light secondary-bg"
+            onClick={() => navigate('/dashboard/recipe-data')}
+          >
+            + Add New Recipe
+          </button>
+        )}
       </div>
 
-      {/* Table */}
+      {/* ================= Table ================= */}
       <div className="container mt-4">
         {loading && <p>Loading...</p>}
         {error && <p className="text-danger">{error}</p>}
@@ -131,7 +161,7 @@ export default function RecipesList() {
           <table className="table table-striped table-hover">
             <thead>
               <tr>
-                <th>Item Name</th>
+                <th>Name</th>
                 <th>Image</th>
                 <th>Price</th>
                 <th>Description</th>
@@ -145,6 +175,7 @@ export default function RecipesList() {
               {recipesList.map((recipe) => (
                 <tr key={recipe.id}>
                   <td>{recipe.name}</td>
+
                   <td>
                     <img
                       src={`https://upskilling-egypt.com:3006/${recipe.imagePath}`}
@@ -154,48 +185,66 @@ export default function RecipesList() {
                       style={{ objectFit: 'cover', borderRadius: '6px' }}
                     />
                   </td>
+
                   <td>{recipe.price} EGP</td>
                   <td>{recipe.description}</td>
                   <td>{recipe.tag?.name || 'No Tag'}</td>
                   <td>{recipe.category?.name || 'No Category'}</td>
-                  <td style={{ position: 'relative' }}>
-                    <i
-                      className="fa-solid fa-ellipsis cursor-pointer"
-                      onClick={() => toggleMenu(recipe.id)}
-                    />
 
-                    {openMenuId === recipe.id && (
-                      <div
-                        className="p-3 border bg-white shadow-sm rounded"
-                        style={{
-                          position: 'absolute',
-                          right: 0,
-                          top: '25px',
-                          minWidth: '120px',
-                          zIndex: 10,
-                        }}
-                      >
-                        <button
-                          className="dropdown-item text-success p-1"
-                          onClick={() => navigate(`/dashboard/recipe-view/${recipe.id}`)}
+                  {/* ================= Actions ================= */}
+                  {loginData?.userGroup !== 'SystemUser' ? (
+                    <td style={{ position: 'relative' }}>
+                      <i
+                        className="fa-solid fa-ellipsis cursor-pointer"
+                        onClick={() => toggleMenu(recipe.id)}
+                      />
+
+                      {openMenuId === recipe.id && (
+                        <div
+                          className="p-3 border bg-white shadow-sm rounded"
+                          style={{
+                            position: 'absolute',
+                            right: 0,
+                            top: '25px',
+                            minWidth: '120px',
+                            zIndex: 10,
+                          }}
                         >
-                          <i className="fa-solid fa-eye"></i> View
-                        </button>
-                        <button
-                          className="dropdown-item p-1"
-                          onClick={() => navigate(`/dashboard/recipe-data/${recipe.id}`)}
-                        >
-                          <i className="fa-solid fa-pen-to-square"></i> Edit
-                        </button>
-                        <button
-                          className="dropdown-item text-danger p-1"
-                          onClick={() => handleShow(recipe)}
-                        >
-                          <i className="fa-solid fa-trash"></i> Delete
-                        </button>
-                      </div>
-                    )}
-                  </td>
+                          <button
+                            className="dropdown-item text-success p-1"
+                            onClick={() =>
+                              navigate(`/dashboard/recipe-view/${recipe.id}`)
+                            }
+                          >
+                            <i className="fa-solid fa-eye"></i> View
+                          </button>
+
+                          <button
+                            className="dropdown-item p-1"
+                            onClick={() =>
+                              navigate(`/dashboard/recipe-data/${recipe.id}`)
+                            }
+                          >
+                            <i className="fa-solid fa-pen-to-square"></i> Edit
+                          </button>
+
+                          <button
+                            className="dropdown-item text-danger p-1"
+                            onClick={() => handleShow(recipe)}
+                          >
+                            <i className="fa-solid fa-trash"></i> Delete
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  ) : (
+                    <td className="text-center">
+                      <i
+                        className="fa-solid fa-heart text-danger cursor-pointer"
+                        onClick={() => addToFav(recipe.id, recipe.name)}
+                      />
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

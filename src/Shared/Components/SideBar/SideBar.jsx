@@ -6,6 +6,7 @@ import { AuthContext } from '../../../Context/AuthContext/AuthContext';
 
 export default function SideBar() {
   const { Logout } = useContext(AuthContext);  
+const {loginData}=useContext(AuthContext)
 
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
@@ -39,14 +40,16 @@ export default function SideBar() {
           >
             Home
           </MenuItem>
-
-          <MenuItem
+          {loginData?.userGroup!='SystemUser'?
+           <MenuItem
             icon={<i className="fa-solid fa-users"></i>}
             component={<Link to="/dashboard/users" />}
             className={getMenuItemClass('/dashboard/users')}
           >
             Users
-          </MenuItem>
+          </MenuItem>: ''
+          }
+         
 
           <MenuItem
             icon={<i className="fa-solid fa-utensils"></i>}
@@ -55,15 +58,24 @@ export default function SideBar() {
           >
             Recipes
           </MenuItem>
-
           <MenuItem
+            icon={<i className="fa-solid fa-utensils"></i>}
+            component={<Link to="/dashboard/favList" />}
+            className={getMenuItemClass('/dashboard/favList')}
+          >
+            FavList
+          </MenuItem>
+          {loginData?.userGroup !='SystemUser'?
+               <MenuItem
             icon={<i className="fa-solid fa-list"></i>}
             component={<Link to="/dashboard/categories-list" />}
             className={getMenuItemClass('/dashboard/categories-list')}
           >
             Categories
           </MenuItem>
-
+            :' '
+          }
+     
           <MenuItem
             icon={<i className="fa-solid fa-key"></i>}
             component={<Link to="/dashboard/changepass" />}
