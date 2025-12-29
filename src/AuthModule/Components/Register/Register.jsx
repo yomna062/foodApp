@@ -1,102 +1,188 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import logo from '../../../assets/images/logo.png'; // تأكد من مسار الصورة
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import logo from "../../../assets/images/logo.png";
+import "./Register.css";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user'); // user أو admin
+export default function Register() {
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ role, email, password });
-    // هنا يمكن إضافة الاتصال بالـ API لتسجيل الدخول
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm({ mode: "onChange" });
+
+  // Watch password to compare with confirmPassword
+  const password = watch("password");
+
+  const onSubmit = async (data) => {
+    // Destructure to remove confirmPassword from the payload sent to the server
+    const { confirmPassword, ...registerData } = data;
+
+    try {
+      const response = await axios.post(
+        "https://upskilling-egypt.com:3006/api/v1/Users/Register",
+        registerData
+      );
+
+      toast.success(response.data?.message || "Registered successfully!");
+      navigate("/login");
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Registration failed. Please try again."
+      );
+    }
   };
 
   return (
-    <div className="container-fluid vh-100" style={{ background: '#1a1a2e' }}>
-      <div className="row h-100">
-        {/* الجانب الأيسر: اختيار الدور */}
-        <div className="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center text-center text-white" style={{ background: '#162447' }}>
-          <h2 className="mb-4">Welcome Back!</h2>
-          <p className="mb-4">Please select your role to login</p>
-          <div className="btn-group mb-4" role="group">
-            <button
-              type="button"
-              className={`btn ${role === 'user' ? 'btn-primary' : 'btn-outline-light'}`}
-              onClick={() => setRole('user')}
-            >
-              User
-            </button>
-            <button
-              type="button"
-              className={`btn ${role === 'admin' ? 'btn-primary' : 'btn-outline-light'}`}
-              onClick={() => setRole('admin')}
-            >
-              Admin
-            </button>
-          </div>
+    <div className="auth-wrapper">
+      <div className="register-box w-75">
+        {/* Logo Section */}
+                   <div className="logo-container text-center">
+                    <img src={logo} alt="Logo" className="logo mb-4 w-25" />
+                  </div>
+
+        {/* Header Section */}
+        <div className="form-title">
+          <h5 className="fw-bold">Register</h5>
+          <p className="text-muted">Welcome Back! Please enter your details</p>
         </div>
 
-        {/* الجانب الأيمن: الفورم */}
-        <div className="col-md-6 d-flex justify-content-center align-items-center">
-          <div className="form-container bg-white p-5 rounded shadow w-75">
-            {/* Logo */}
-            <div className="text-center mb-4">
-              <img src={logo} alt="Logo" className="w-50" />
+        {/* Registration Form */}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="form-grid">
+            
+            {/* UserName */}
+            <div className="input-group-custom">
+              <div className="input-box">
+                <i className="fa-regular fa-user"></i>
+                <input
+                  type="text"
+                  placeholder="UserName"
+                  {...register("userName", {
+                    required: "User name is required",
+                    minLength: { value: 3, message: "Username too short" }
+                  })}
+                />
+              </div>
+              {errors.userName && <small className="text-danger">{errors.userName.message}</small>}
             </div>
 
-            <h4 className="text-center mb-2">Log In</h4>
-            <p className="text-muted text-center mb-4">Enter your details to access your account</p>
-
-            <form onSubmit={handleSubmit}>
-              {/* Email */}
-              <div className="input-group mb-3">
-                <span className="input-group-text">
-                  <i className="fa-solid fa-envelope"></i>
-                </span>
+            {/* Email */}
+            <div className="input-group-custom">
+              <div className="input-box">
+                <i className="fa-regular fa-envelope"></i>
                 <input
                   type="email"
-                  className="form-control"
                   placeholder="Enter your E-mail"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Invalid email address",
+                    },
+                  })}
                 />
               </div>
+              {errors.email && <small className="text-danger">{errors.email.message}</small>}
+            </div>
 
-              {/* Password */}
-              <div className="input-group mb-3">
-                <span className="input-group-text">
-                  <i className="fa-solid fa-lock"></i>
-                </span>
+            {/* Country */}
+            <div className="input-group-custom">
+              <div className="input-box">
+                <i className="fa-solid fa-globe"></i>
                 <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  type="text"
+                  placeholder="Country"
+                  {...register("country", {
+                    required: "Country is required",
+                  })}
                 />
               </div>
+              {errors.country && <small className="text-danger">{errors.country.message}</small>}
+            </div>
 
-              {/* Links */}
-              <div className="d-flex justify-content-between mb-3">
-                <Link to="/Register" className="text-decoration-none text-dark">
-                  Register Now?
-                </Link>
-                <Link to="/ForgetPass" className="text-decoration-none text-primary">
-                  Forgot Password?
-                </Link>
+            {/* Phone Number */}
+            <div className="input-group-custom">
+              <div className="input-box">
+                <i className="fa-solid fa-mobile-screen-button"></i>
+                <input
+                  type="tel"
+                  placeholder="PhoneNumber"
+                  {...register("phoneNumber", {
+                    required: "Phone number is required",
+                  })}
+                />
               </div>
+              {errors.phoneNumber && <small className="text-danger">{errors.phoneNumber.message}</small>}
+            </div>
 
-              {/* Submit Button */}
-              <button type="submit" className="btn btn-primary w-100 py-2 mb-3">
-                Log In
-              </button>
-            </form>
+            {/* Password */}
+            <div className="input-group-custom">
+              <div className="input-box">
+                <i className="fa-solid fa-lock"></i>
+                <input
+                  type={showPass ? "text" : "password"}
+                  placeholder="Password"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                  })}
+                />
+                <span className="password-toggle" onClick={() => setShowPass(!showPass)}>
+                  <i className={`fa-regular ${showPass ? "fa-eye-slash" : "fa-eye"}`}></i>
+                </span>
+              </div>
+              {errors.password && <small className="text-danger">{errors.password.message}</small>}
+            </div>
+
+            {/* Confirm Password */}
+            <div className="input-group-custom">
+              <div className="input-box">
+                <i className="fa-solid fa-lock"></i>
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  {...register("confirmPassword", {
+                    required: "Confirm password is required",
+                    validate: (value) =>
+                      value === password || "Passwords do not match",
+                  })}
+                />
+                <span className="password-toggle" onClick={() => setShowConfirm(!showConfirm)}>
+                  <i className={`fa-regular ${showConfirm ? "fa-eye-slash" : "fa-eye"}`}></i>
+                </span>
+              </div>
+              {errors.confirmPassword && (
+                <small className="text-danger">{errors.confirmPassword.message}</small>
+              )}
+            </div>
           </div>
-        </div>
+
+          <div className="login-link text-end my-3">
+            <Link to="/login" className="text-success text-decoration-none">
+              Login Now?
+            </Link>
+          </div>
+
+          <button className=" w-100 border-0 text-white  py-2 px-4 rounded my-4 main-bg" disabled={isSubmitting}>
+            {isSubmitting ? (
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            ) : (
+              "Register"
+            )}
+          </button>
+        </form>
       </div>
     </div>
   );

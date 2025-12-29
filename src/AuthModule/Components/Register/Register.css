@@ -1,0 +1,113 @@
+.auth-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #7da47b, #6d6d6d);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.register-box {
+  background: #fff;
+  width: 100%;
+  max-width: 900px;
+  padding: 40px 50px;
+  border-radius: 16px;
+}
+
+/* Logo */
+.logo-area {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+
+
+.logo-area h4 {
+  margin: 10px 0 0;
+  font-weight: 700;
+}
+
+.logo-area h4 span {
+  color: #4caf50;
+}
+
+.logo-area p {
+  font-size: 13px;
+  color: #888;
+}
+
+/* Title */
+.form-title {
+  margin-bottom: 25px;
+}
+
+.form-title h5 {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.form-title p {
+  font-size: 13px;
+  color: #999;
+}
+
+/* Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Input */
+.input-box {
+  position: relative;
+  background: #f7f7f7;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+}
+
+.input-box i {
+  color: #777;
+  font-size: 14px;
+}
+
+.input-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+.input-box span {
+  cursor: pointer;
+  color: #777;
+}
+
+/* Login */
+.login-link {
+  text-align: right;
+  margin: 12px 0 20px;
+}
+
+.login-link a {
+  font-size: 13px;
+  color: #4caf50;
+  text-decoration: none;
+}
+
+/* Button */
+.register-btn {
+  width: 100%;
+  background: #4caf50;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+}

@@ -58,13 +58,14 @@ const {loginData}=useContext(AuthContext)
           >
             Recipes
           </MenuItem>
-          <MenuItem
+           {loginData?.userGroup =='SystemUser'? <MenuItem
             icon={<i className="fa-solid fa-utensils"></i>}
             component={<Link to="/dashboard/favList" />}
             className={getMenuItemClass('/dashboard/favList')}
           >
             FavList
-          </MenuItem>
+          </MenuItem>:'' }
+         
           {loginData?.userGroup !='SystemUser'?
                <MenuItem
             icon={<i className="fa-solid fa-list"></i>}
